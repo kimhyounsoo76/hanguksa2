@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2b5f75">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<title>한국사 기출 풀이 — 심화 1급</title>
+<meta name="theme-color" content="#0D1F3C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<style>
+:root{
+  --baekja:#F5F6F4; --paper:#FFFFFF;
+  --cheong:#1B3B6F; --cheong-d:#0D1F3C; --cheong-l:#E8EDF5;
+  --meok:#22252B; --hoe:#6E7C8C; --seon:#D9DEE4;
+  --ju:#C0392B; --ok:#1E6B4F; --byeol:#B8860B;
+  --r:10px; --sh:0 1px 2px rgba(13,31,60,.06),0 4px 16px rgba(13,31,60,.06);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--baekja);color:var(--meok);
+  font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:16px;line-height:1.65;-webkit-text-size-adjust:100%;
+  padding-bottom:env(safe-area-inset-bottom)}
+.serif{font-family:"Gowun Batang",serif}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none;background:none;color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--cheong);outline-offset:2px;border-radius:4px}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+header{background:var(--cheong-d);color:#fff;padding:16px 0 14px;padding-top:calc(16px + env(safe-area-inset-top))}
+.hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.hd h1{font-family:"Gowun Batang",serif;font-size:18px;font-weight:700;margin:0;letter-spacing:-.02em}
+.dday{text-align:right;line-height:1.25;flex:none}
+.dday b{font-size:19px;font-family:"Gowun Batang",serif}
+.dday span{display:block;font-size:11px;opacity:.65}
+
+main{padding:20px 0 60px}
+.scr{display:none} .scr.on{display:block}
+h2.t{font-family:"Gowun Batang",serif;font-size:17px;margin:26px 0 10px;letter-spacing:-.01em}
+h2.t:first-child{margin-top:4px}
+.card{background:var(--paper);border:1px solid var(--seon);border-radius:var(--r);box-shadow:var(--sh)}
+
+/* 진도 */
+.stat{padding:16px 18px;margin-bottom:8px}
+.stat .sum{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.stat .sum b{font-family:"Gowun Batang",serif;font-size:22px}
+.stat .sum span{font-size:12px;color:var(--hoe)}
+.bar-row{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:12px}
+.bar-row .nm{width:64px;color:var(--hoe);flex:none}
+.bar{flex:1;height:6px;background:var(--cheong-l);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--cheong);border-radius:3px}
+.bar-row .pc{width:60px;text-align:right;color:var(--hoe);flex:none;font-variant-numeric:tabular-nums}
+
+/* 모드 버튼 */
+.mode{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px;
+  background:var(--paper);border:1px solid var(--seon);border-radius:var(--r);margin-bottom:8px;box-shadow:var(--sh)}
+.mode:hover:not(:disabled){border-color:var(--cheong);transform:translateY(-1px);transition:.12s}
+.mode:disabled{opacity:.42;cursor:default}
+.mode .ic{width:34px;height:34px;border-radius:8px;background:var(--cheong-l);color:var(--cheong);
+  display:grid;place-items:center;font-family:"Gowun Batang",serif;font-size:17px;flex:none}
+.mode.hot .ic{background:#FBE9E7;color:var(--ju)}
+.mode .tx{flex:1;min-width:0}
+.mode .tx b{display:block;font-size:15px}
+.mode .tx span{display:block;font-size:12px;color:var(--hoe)}
+.mode .cnt{font-size:12px;color:var(--hoe);flex:none;font-variant-numeric:tabular-nums}
+
+/* 목록 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.item{padding:12px 14px;background:var(--paper);border:1px solid var(--seon);border-radius:var(--r);text-align:left}
+.item:hover{border-color:var(--cheong)}
+.item b{display:block;font-size:14px;margin-bottom:6px}
+.item .u-meta{display:flex;align-items:center;gap:7px}
+.u-bar{flex:1;height:4px;background:var(--cheong-l);border-radius:2px;overflow:hidden}
+.u-bar i{display:block;height:100%;background:var(--cheong)}
+.u-pc{font-size:11px;color:var(--hoe);font-variant-numeric:tabular-nums}
+
+/* 문제 화면 */
+.qbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:13px}
+.qbar .pn{font-variant-numeric:tabular-nums;color:var(--hoe)}
+.qbar .pg{flex:1;height:4px;background:var(--cheong-l);border-radius:2px;overflow:hidden}
+.qbar .pg i{display:block;height:100%;background:var(--cheong);transition:width .2s}
+.qbar .tm{font-variant-numeric:tabular-nums;color:var(--hoe)}
+.qbar .x{padding:2px 8px;color:var(--hoe)}
+.qmeta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--cheong-l);color:var(--cheong)}
+.tag.pt{background:#F3EFE2;color:#8A6D1F}
+.star{margin-left:auto;font-size:18px;color:var(--seon);padding:0 4px}
+.star.on{color:var(--byeol)}
+.qimg{width:100%;display:block;border:1px solid var(--seon);border-radius:var(--r);background:#fff}
+.opts{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:14px 0}
+.opt{padding:13px 0;font-size:19px;font-family:"Gowun Batang",serif;background:var(--paper);
+  border:1px solid var(--seon);border-radius:var(--r)}
+.opt:hover:not(:disabled){border-color:var(--cheong);background:var(--cheong-l)}
+.opt.sel{background:var(--cheong);color:#fff;border-color:var(--cheong)}
+.opt.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.no{background:var(--ju);color:#fff;border-color:var(--ju)}
+.opt:disabled{cursor:default}
+.btn{display:block;width:100%;padding:14px;background:var(--cheong);color:#fff;border-radius:var(--r);
+  font-size:15px;font-weight:600;margin-top:10px}
+.btn:hover{background:var(--cheong-d)}
+.btn.sub{background:none;color:var(--hoe);border:1px solid var(--seon)}
+.btn.sub:hover{background:var(--paper);color:var(--meok)}
+
+/* 해설 */
+.sol{margin-top:14px}
+.verdict{padding:12px 14px;border-radius:var(--r);font-size:14px;font-weight:600;margin-bottom:10px}
+.verdict.ok{background:#E8F3EE;color:var(--ok)}
+.verdict.no{background:#FBE9E7;color:var(--ju)}
+.why{padding:13px 15px;background:var(--cheong-l);border-radius:var(--r);font-size:14px;margin-bottom:12px}
+.why b{display:block;font-size:11px;color:var(--cheong);letter-spacing:.04em;margin-bottom:4px}
+.dis{border-top:1px solid var(--seon)}
+.dis-h{font-size:11px;color:var(--hoe);letter-spacing:.04em;padding:12px 0 8px}
+.line{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--seon);font-size:14px}
+.line .no{font-family:"Gowun Batang",serif;font-size:16px;color:var(--hoe);flex:none;width:20px;text-align:center}
+.line.ans .no{color:var(--ok);font-weight:700}
+.line.pick .no{color:var(--ju);font-weight:700}
+.line p{margin:0}
+.line.ans{background:#F3FAF6;border-radius:6px;padding-left:6px;padding-right:6px}
+.line.pick{background:#FDF3F2;border-radius:6px;padding-left:6px;padding-right:6px}
+.refline{font-size:12px;color:var(--hoe);padding:11px 0 0;border-top:1px solid var(--seon);margin-top:4px}
+
+/* 결과 */
+.score{text-align:center;padding:26px 18px}
+.score .gr{font-size:12px;color:var(--hoe)}
+.score .pt{font-family:"Gowun Batang",serif;font-size:52px;line-height:1.1;color:var(--cheong)}
+.score .pt em{font-size:17px;font-style:normal;color:var(--hoe)}
+.score .de{font-size:13px;color:var(--hoe)}
+.score .band{margin-top:12px;padding:9px;background:var(--cheong-l);color:var(--cheong);
+  border-radius:var(--r);font-size:13px;font-weight:600}
+.rv-i{display:flex;gap:9px;padding:10px 0;border-top:1px solid var(--seon);font-size:13px}
+.rv-i .mk{color:var(--ju);flex:none}
+.rv-i .qq{flex:1}
+.rv-i .qq span{display:block;font-size:11px;color:var(--hoe)}
+.empty{text-align:center;padding:30px 18px;color:var(--hoe);font-size:14px}
+.empty .big{display:block;font-family:"Gowun Batang",serif;font-size:34px;color:var(--cheong-l);margin-bottom:6px}
+
+.note{font-size:12px;color:var(--hoe);line-height:1.7;padding:14px 16px;margin-top:8px}
+.note b{color:var(--meok)}
+.row{display:flex;gap:8px;margin-top:8px}
+.row .btn{margin-top:0}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
+  background:var(--cheong-d);color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;
+  opacity:0;transition:.25s;pointer-events:none;z-index:9;max-width:90vw}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+input[type=file]{display:none}
+/* 교재 학습 */
+.doc{background:var(--paper,#fff);border:1px solid var(--line,#e5e0d8);border-radius:14px;padding:16px;line-height:1.75;font-size:15px;word-break:keep-all}
+.doc h4{margin:18px 0 6px;font-size:15px;color:var(--cheong,#2b5f75);border-left:3px solid var(--cheong,#2b5f75);padding-left:8px}
+.doc p{margin:8px 0}
+.doc ul{margin:6px 0;padding-left:20px}
+.doc li{margin:3px 0}
+.doc table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13.5px;display:block;overflow-x:auto}
+.doc th,.doc td{border:1px solid var(--line,#ddd);padding:6px 8px;text-align:left;vertical-align:top;min-width:70px}
+.doc th{background:rgba(43,95,117,.08)}
+.qlinks{margin-top:14px}
+.qlinks .h{font-weight:700;margin:14px 0 8px;font-size:14px}
+.qlink{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:1px solid var(--line,#e5e0d8);border-radius:10px;padding:9px 12px;margin:5px 0;font-size:13.5px;cursor:pointer}
+.qlink .rn{flex:none;color:var(--cheong,#2b5f75);font-weight:700;font-variant-numeric:tabular-nums}
+.qlink .st{flex:none;margin-left:auto;font-size:12px}
+.qlink .st.o{color:#2c7a4b}.qlink .st.x{color:#b4423a}
+.sec-item small{display:block;color:var(--hoe,#888);font-weight:400;margin-top:2px}
+
+.qstem{background:var(--paper,#fff);border:1px solid var(--line,#e5e0d8);border-radius:12px;padding:16px;line-height:1.7;font-size:15.5px;white-space:pre-wrap;margin:8px 0;word-break:keep-all}
+.opts .opt.txt{display:block;grid-column:1/-1;text-align:left;padding:13px 15px;font-size:15px;border:1px solid var(--line,#ddd);border-radius:11px;background:var(--paper,#fff);line-height:1.5;height:auto;aspect-ratio:auto;width:100%}
+.opts .opt.txt.ok{background:#e6f4ea;border-color:#2c7a4b;color:#1e5c37;font-weight:600}
+.opts .opt.txt.no{background:#fbeae8;border-color:#c0473d;color:#8f2f27}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="hd">
+  <h1>한국사 기출 풀이 <span style="font-weight:400;opacity:.6;font-size:13px">심화 1급</span></h1>
+  <div class="dday" id="dday"></div>
+</div></div></header>
+
+<main class="wrap">
+
+<!-- 홈 -->
+<section class="scr on" id="s-home">
+  <div class="card note" id="setup" style="display:none;border-color:var(--cheong)">
+    <b>먼저 문제팩을 넣어 주세요</b><br>
+    같이 받은 <b>문제팩 파일 5개 + 교재팩 1개를 한 번에 모두 선택</b>하면 57회부터 78회까지
+    1,100문항이 들어갑니다. 용량이 커서 넣는 데 10초쯤 걸립니다.
+    한 번만 넣으면 기기에 저장되어 다음부터는 바로 열립니다.
+    <button class="btn" style="margin-top:10px" onclick="packIn.click()">문제팩 넣기</button>
+  </div>
+  <div class="card stat">
+    <div class="sum"><b id="st-sum">—</b><span id="st-sub">푼 문항</span></div>
+    <div id="st-bars"></div>
+  </div>
+
+  <h2 class="t">오늘 할 일</h2>
+  <button class="mode hot" id="m-due" onclick="startDue()">
+    <span class="ic">復</span><span class="tx"><b>오늘 복습</b>
+    <span>틀린 문제를 1일 → 3일 → 7일 간격으로</span></span>
+    <span class="cnt" id="cnt-due">0문항</span></button>
+  <button class="mode" id="m-wrong" onclick="startWrong()">
+    <span class="ic">✕</span><span class="tx"><b>틀린 문제 전부</b>
+    <span>기간 상관없이 몰아서 다시 풀기</span></span>
+    <span class="cnt" id="cnt-wrong">0문항</span></button>
+  <button class="mode" id="m-star" onclick="startStar()">
+    <span class="ic">★</span><span class="tx"><b>별표한 문제</b>
+    <span>표시해 둔 것만</span></span>
+    <span class="cnt" id="cnt-star">0문항</span></button>
+
+  <h2 class="t">문제 풀기</h2>
+  <button class="mode" onclick="packIn.click()">
+    <span class="ic">＋</span><span class="tx"><b>문제팩 넣기</b>
+    <span>문제팩 파일을 여러 개 한 번에 선택</span></span>
+    <span class="cnt" id="cnt-pack">—</span></button>
+  <button class="mode" onclick="go('s-round')">
+    <span class="ic">回</span><span class="tx"><b>회차별</b>
+    <span>실제 시험처럼 50문항을 순서대로</span></span>
+    <span class="cnt" id="cnt-round">—</span></button>
+  <button class="mode" id="m-study" onclick="drawStudy();go('s-study')">
+    <span class="ic">📖</span><span class="tx"><b>교재 학습</b>
+    <span>단원 읽기 · 예상문제 · 그 단원 기출까지 한 번에</span></span>
+    <span class="cnt" id="cnt-study">—</span></button>
+  <button class="mode" onclick="go('s-era')">
+    <span class="ic">代</span><span class="tx"><b>시대별</b>
+    <span>여러 회차를 시대 단위로 묶어서</span></span>
+    <span class="cnt" id="cnt-era">—</span></button>
+  <button class="mode" onclick="startMock()">
+    <span class="ic">試</span><span class="tx"><b>무작위 모의고사</b>
+    <span>전 회차에서 50문항 · 점수가 곧 등급</span></span>
+    <span class="cnt">50문항</span></button>
+
+  <h2 class="t">기록</h2>
+  <div class="row">
+    <button class="btn sub" onclick="saveFile()">기록 내려받기</button>
+    <button class="btn sub" onclick="fileIn.click()">기록 불러오기</button>
+  </div>
+  <div class="row">
+    <button class="btn sub" onclick="resetAll()">기록 지우기</button>
+    <button class="btn sub" onclick="clearPacks()">문제팩 지우기</button>
+  </div>
+  <input type="file" id="fileIn" accept=".json" onchange="loadFile(this)">
+  <input type="file" id="packIn" accept=".json" multiple onchange="loadPack(this)">
+
+  <div class="card note">
+    <b>이 앱에 대해</b><br>
+    국사편찬위원회가 공개한 <b>제57회~제78회 실제 기출 문제지</b> 22회차 1,100문항을
+    문항 단위로 그대로 옮겼습니다. 사진·지도·연표 문항도 원본 그대로라 빠짐없이 풀 수 있습니다.
+    정답과 배점은 공식 정답표에서 가져왔고, 22회차 모두 <b>배점 합계 100점</b>으로 확인했습니다.<br><br>
+    <b>해설은 제77회 250개 선지에 붙어 있습니다.</b> 정답이 왜 답인지뿐 아니라
+    오답 선지가 <b>사실은 어느 시대·어느 인물 것인지</b>까지 나옵니다.
+    한능검은 오답 선지를 다음 회차 정답으로 재활용하기 때문에 여기서 1급과 2급이 갈립니다.
+    근거는 『한국사 심화 1급 목표 완전 정복』 제1~4권입니다.
+    나머지 회차는 해설 대신 <b>어느 권 어느 시대를 펴야 하는지</b>를 알려 줍니다.<br><br>
+    심화는 50문항 5지선다이고 <b>80점 이상이면 1급</b>(70~79점 2급, 60~69점 3급)입니다.
+    회차별·모의고사 모드가 50문항이고 배점대로 채점하는 이유입니다.
+  </div>
+</section>
+
+<!-- 회차 선택 -->
+<section class="scr" id="s-round">
+  <button class="btn sub" onclick="go('s-home')" style="width:auto;padding:8px 14px">← 홈</button>
+  <h2 class="t">회차별</h2>
+  <div class="grid" id="round-list"></div>
+  <div class="card note" id="round-note"></div>
+</section>
+
+<!-- 시대 선택 -->
+<section class="scr" id="s-era">
+  <button class="btn sub" onclick="go('s-home')" style="width:auto;padding:8px 14px">← 홈</button>
+  <h2 class="t">시대별</h2>
+  <div class="grid" id="era-list"></div>
+</section>
+
+<!-- 문제 -->
+<section class="scr" id="s-study">
+  <button class="btn sub" onclick="go('s-home')" style="width:auto;padding:8px 14px">← 홈</button>
+  <h2 class="t">교재 학습</h2>
+  <div class="grid" id="study-vols"></div>
+  <div class="card note" id="study-note"></div>
+</section>
+
+<section class="scr" id="s-sec">
+  <button class="btn sub" onclick="go('s-study')" style="width:auto;padding:8px 14px">← 권 목록</button>
+  <h2 class="t" id="sec-title"></h2>
+  <div class="grid" id="sec-list"></div>
+</section>
+
+<section class="scr" id="s-read">
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn sub" id="read-back" style="width:auto;padding:8px 14px">← 단원 목록</button>
+  </div>
+  <h2 class="t" id="read-title"></h2>
+  <div class="doc" id="read-doc"></div>
+  <div class="qlinks" id="read-qs"></div>
+</section>
+
+<section class="scr" id="s-quiz">
+  <div class="qbar">
+    <span class="pn" id="pn">1 / 50</span>
+    <span class="pg"><i id="pgi"></i></span>
+    <span class="tm" id="tm"></span>
+    <button class="x" onclick="quitQuiz()">나가기</button>
+  </div>
+  <div class="qmeta" id="qmeta"></div>
+  <img class="qimg" id="qimg" alt="문제">
+  <div class="qstem" id="qstem" style="display:none"></div>
+  <div class="opts" id="opts"></div>
+  <div id="sol"></div>
+  <div id="qbtns"></div>
+</section>
+
+<!-- 결과 -->
+<section class="scr" id="s-result">
+  <div class="card score" id="score"></div>
+  <div class="card" id="review" style="padding:4px 16px 16px;display:none"></div>
+  <button class="btn" onclick="go('s-home')">홈으로</button>
+  <button class="btn sub" id="again">다시 풀기</button>
+</section>
+
+</main>
+<div id="toast"></div>
+<script>
+/* ══ 상수 ══ */
+const EXAM = '2026-08-08';                 // 시험일 — 여기만 고치면 됩니다
+const KEY  = 'hanguksa-gichul-v1';
+const PACK_KEY = 'hanguksa-packs-v1';
+const ERAS = ['선사','초기국가','삼국','남북국','고려','조선전기','조선후기','근대','일제','현대','통합'];
+const ERA_NM = {선사:'선사시대',초기국가:'초기 국가',삼국:'삼국',남북국:'남북국',고려:'고려',
+  조선전기:'조선 전기',조선후기:'조선 후기',근대:'근대(개항기)',일제:'일제 강점기',현대:'현대',통합:'시대 통합'};
+const VOLS = {1:'제1권 선사·삼국',2:'제2권 남북국·고려',3:'제3권 조선',4:'제4권 근현대'};
+const CIRCLE = ['①','②','③','④','⑤'];
+const GAP = [1,3,7];                       // 간격 반복: 1일 → 3일 → 7일 → 졸업
+
+/* ══ 문제팩 저장 — IndexedDB (localStorage는 5MB 제한) ══ */
+let DB = null;
+function openDB(){
+  return new Promise((res, rej)=>{
+    const q = indexedDB.open('hanguksa-gichul', 2);
+    q.onupgradeneeded = e => {
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains('packs')) db.createObjectStore('packs', {keyPath:'round'});
+      if(!db.objectStoreNames.contains('study')) db.createObjectStore('study', {keyPath:'round'});
+    };
+    q.onsuccess = e => { DB = e.target.result; res(DB); };
+    q.onerror = () => rej(q.error);
+  });
+}
+function dbAll(){
+  if(!DB) return Promise.resolve([]);
+  return new Promise((res, rej)=>{
+    const t = DB.transaction('packs').objectStore('packs').getAll();
+    t.onsuccess = () => res(t.result || []);
+    t.onerror = () => rej(t.error);
+  });
+}
+function dbPut(p){
+  if(!DB) return Promise.resolve();          // 저장소를 못 열면 이번 세션만 유지
+  return new Promise((res, rej)=>{
+    const t = DB.transaction('packs','readwrite').objectStore('packs').put(p);
+    t.onsuccess = () => res(); t.onerror = () => rej(t.error);
+  });
+}
+function dbClear(){
+  if(!DB) return Promise.resolve();
+  return new Promise((res, rej)=>{
+    const t = DB.transaction('packs','readwrite').objectStore('packs').clear();
+    t.onsuccess = () => res(); t.onerror = () => rej(t.error);
+  });
+}
+function dbPutStudy(p){
+  if(!DB || !DB.objectStoreNames.contains('study')) return Promise.resolve();
+  return new Promise((res, rej)=>{
+    const t = DB.transaction('study','readwrite').objectStore('study').put(p);
+    t.onsuccess = () => res(); t.onerror = () => rej(t.error);
+  });
+}
+function dbGetStudy(){
+  if(!DB || !DB.objectStoreNames.contains('study')) return Promise.resolve(null);
+  return new Promise((res)=>{
+    const t = DB.transaction('study').objectStore('study').getAll();
+    t.onsuccess = () => res((t.result||[])[0] || null);
+    t.onerror = () => res(null);
+  });
+}
+let STUDY = null;
+let PACKS = [];
+let ALL = [];
+function rebuild(){
+  PACKS.sort((a,b)=>b.round-a.round);
+  ALL = [];
+  PACKS.forEach(p=>p.qs.forEach(q=>ALL.push(q)));
+}
+
+/* ══ 상태 ══ */
+let S = {done:{}, srs:{}, star:[], made:{}, runs:0};
+function ensureS(){ if(!S.made) S.made={}; }
+try{
+  const d = JSON.parse(localStorage.getItem(KEY)||'null');
+  if(d && typeof d==='object') S = Object.assign(S, d);
+  ensureS();
+}catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ══ 도구 ══ */
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function pct(a,b){ return b ? Math.round(a/b*100) : 0; }
+function today(){ return new Date().toISOString().slice(0,10); }
+function addDays(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2000); }
+function go(id){ document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on', s.id===id)); }
+function qById(id){ return ALL.find(q=>q.id===id); }
+
+/* ══ D-day ══ */
+(function(){
+  const d = Math.ceil((new Date(EXAM) - new Date(today())) / 864e5);
+  $('dday').innerHTML = d>0 ? `<b>D-${d}</b><span>시험까지</span>`
+    : d===0 ? `<b>D-DAY</b><span>오늘입니다</span>` : `<b>D+${-d}</b><span>수고하셨습니다</span>`;
+})();
+
+/* ══ 간격 반복 ══ */
+function dueIds(){
+  const t = today();
+  return Object.keys(S.srs).filter(id => S.srs[id].d <= t && qById(id));
+}
+function srsRight(id){
+  const s = S.srs[id]; if(!s) return;
+  if(s.b >= GAP.length){ delete S.srs[id]; return; }   // 졸업
+  s.d = addDays(GAP[s.b]); s.b++;
+  if(s.b > GAP.length) delete S.srs[id];
+}
+function srsWrong(id){ S.srs[id] = {b:0, d:today()}; }
+
+/* ══ 홈 ══ */
+function drawHome(){
+  const seen = Object.keys(S.done).filter(id=>qById(id)).length;
+  $('st-sum').textContent = `${seen} / ${ALL.length}문항`;
+  const ok = Object.keys(S.done).filter(id=>qById(id) && S.done[id]==='o').length;
+  $('st-sub').textContent = seen ? `정답률 ${pct(ok,seen)}%` : '아직 시작 전';
+
+  let h = '';
+  for(const v of [1,2,3,4]){
+    const qs = ALL.filter(q=>q.v==v);
+    if(!qs.length) continue;
+    const dn = qs.filter(q=>S.done[q.id]).length;
+    const gd = qs.filter(q=>S.done[q.id]==='o').length;
+    h += `<div class="bar-row"><span class="nm">${VOLS[v].split(' ')[0]}</span>
+      <span class="bar"><i style="width:${pct(dn,qs.length)}%"></i></span>
+      <span class="pc">${dn?gd+'/'+dn:'—'}</span></div>`;
+  }
+  $('st-bars').innerHTML = h;
+
+  const du = dueIds().length, wr = Object.keys(S.srs).filter(id=>qById(id)).length;
+  const st = S.star.filter(id=>qById(id)).length;
+  $('cnt-due').textContent   = du+'문항';
+  $('cnt-wrong').textContent = wr+'문항';
+  $('cnt-star').textContent  = st+'문항';
+  $('m-due').disabled   = !du;
+  $('m-wrong').disabled = !wr;
+  $('m-star').disabled  = !st;
+  $('cnt-round').textContent = PACKS.length+'회차';
+  $('cnt-pack').textContent = PACKS.length ? PACKS.length+'회차 있음' : '없음';
+  $('setup').style.display = PACKS.length ? 'none' : '';
+  $('cnt-era').textContent   = new Set(ALL.map(q=>q.era)).size+'개 시대';
+  if(STUDY){
+    const nsec=Object.values(STUDY.vols).reduce((a,v)=>a+v.secs.length,0);
+    const nmade=STUDY.made_total||0;
+    $('cnt-study').textContent = nmade?`${nsec}단원·문제${nmade}`:`${nsec}개 단원`;
+  } else $('cnt-study').textContent='교재팩 필요';
+}
+
+/* ══ 회차 목록 ══ */
+function drawRounds(){
+  let h='';
+  PACKS.forEach(p=>{
+    const dn = p.qs.filter(q=>S.done[q.id]).length;
+    const gd = p.qs.filter(q=>S.done[q.id]==='o').length;
+    h += `<button class="item" onclick="startRound(${p.round})"><b>${esc(p.title)}</b>
+      <span class="u-meta"><span class="u-bar"><i style="width:${pct(dn,p.qs.length)}%"></i></span>
+      <span class="u-pc">${dn?gd+'/'+dn:'0/'+p.qs.length}</span></span></button>`;
+  });
+  $('round-list').innerHTML = h;
+  $('round-note').innerHTML = `현재 <b>${PACKS.length}개 회차</b>가 들어 있습니다.
+    회차를 추가하려면 문제팩(JSON) 파일을 만들어 홈 화면의 <b>문제팩 추가</b>로 넣으세요.
+    회차별 모드에는 <b>80분 타이머</b>가 실제 시험과 같이 붙습니다.`;
+}
+
+/* ══ 시대 목록 ══ */
+function drawEras(){
+  let h='';
+  ERAS.forEach(e=>{
+    const qs = ALL.filter(q=>q.era===e);
+    if(!qs.length) return;
+    const dn = qs.filter(q=>S.done[q.id]).length;
+    const gd = qs.filter(q=>S.done[q.id]==='o').length;
+    h += `<button class="item" onclick="startEra('${e}')"><b>${ERA_NM[e]}</b>
+      <span class="u-meta"><span class="u-bar"><i style="width:${pct(dn,qs.length)}%"></i></span>
+      <span class="u-pc">${dn?gd+'/'+dn:'0/'+qs.length}</span></span></button>`;
+  });
+  $('era-list').innerHTML = h;
+}
+
+/* ══ 교재 학습 ══ */
+let SEC_FROM = 's-sec', CUR_V = 1, CUR_SEC = null;
+function secStat(sec){
+  let dn=0, gd=0;
+  sec.qs.forEach(x=>{ const d=S.done[x.id]; if(d){dn++; if(d==='o')gd++;} });
+  return {dn, gd};
+}
+function drawStudy(){
+  if(!STUDY){
+    $('study-vols').innerHTML='';
+    $('study-note').innerHTML=`<b>교재팩이 아직 없습니다</b><br>
+      같이 받은 <b>교재팩_전권.json</b>을 홈 화면의 <b>문제팩 넣기</b>로 넣으면
+      4권 전체 교재가 여기에 들어오고, 각 단원마다 그 단원에서 나온 기출문제가 함께 붙습니다.`;
+    return;
+  }
+  let h='';
+  for(const v of [1,2,3,4]){
+    const vol = STUDY.vols[v]; if(!vol) continue;
+    const nsec = vol.secs.length;
+    const nq = vol.secs.reduce((s,x)=>s+x.qs.length,0);
+    h += `<button class="item" onclick="drawSecs(${v})"><b>${esc(vol.title)}</b>
+      <span class="u-meta"><span class="u-pc">${nsec}개 단원 · 연결 기출 ${nq}문항</span></span></button>`;
+  }
+  $('study-vols').innerHTML=h;
+  $('study-note').innerHTML=`단원을 열면 <b>본문 → 그 단원에서 나온 기출문제</b> 순서로 이어집니다.
+    본문을 읽은 뒤 바로 아래 기출을 풀면 읽기 → 인출 연습이 한 번에 됩니다.
+    문제 해설 화면에도 <b>「교재에서 이 부분 읽기」</b> 단추가 붙어 반대 방향으로도 오갈 수 있습니다.`;
+}
+function drawSecs(v){
+  CUR_V = v;
+  const vol = STUDY.vols[v];
+  $('sec-title').textContent = vol.title;
+  let h='';
+  vol.secs.forEach(sec=>{
+    const {dn,gd}=secStat(sec);
+    const nq=sec.qs.length; const nm=(sec.made||[]).length;
+    const parts=[];
+    if(nm) parts.push(`예상문제 ${nm}`);
+    if(nq) parts.push(`기출 ${nq}${dn?`(${gd}/${dn})`:''}`);
+    h += `<button class="item sec-item" onclick="openSec('${sec.id}','s-sec')"><b>${esc(sec.t)}</b>
+      <small>${parts.length?parts.join(' · '):'연결된 문제 없음'}</small></button>`;
+  });
+  $('sec-list').innerHTML=h;
+  go('s-sec'); window.scrollTo(0,0);
+}
+function findSec(sid){
+  for(const v of [1,2,3,4]){
+    const vol=STUDY && STUDY.vols[v]; if(!vol) continue;
+    const s=vol.secs.find(x=>x.id===sid); if(s) return {v, s};
+  }
+  return null;
+}
+function openSec(sid, from){
+  const f=findSec(sid); if(!f){ toast('교재팩을 먼저 넣어 주세요'); return; }
+  CUR_SEC=sid; SEC_FROM=from||'s-sec'; CUR_V=f.v;
+  $('read-back').textContent = SEC_FROM==='s-quiz' ? '← 문제로 돌아가기' : '← 단원 목록';
+  $('read-back').onclick = ()=>{ if(SEC_FROM==='s-quiz'){ go('s-quiz'); } else drawSecs(CUR_V); };
+  $('read-title').textContent = f.s.t;
+  $('read-doc').innerHTML = f.s.html;
+  let h='';
+  const made = f.s.made || [];
+  if(made.length){
+    h += `<div class="h">이 단원 교재 예상문제 ${made.length}문항</div>
+      <button class="btn" onclick="startMadeQuiz('${sid}')">📝 이 단원 예상문제 풀기</button>`;
+  }
+  if(f.s.qs.length){
+    h += `<div class="h">이 단원에서 나온 기출 ${f.s.qs.length}문항</div>
+      <button class="btn" onclick="startSecQuiz('${sid}')">이 단원 기출 전부 풀기</button>`;
+    f.s.qs.forEach(x=>{
+      const d=S.done[x.id];
+      const st = d ? (d==='o'?'<span class="st o">맞힘</span>':'<span class="st x">틀림</span>') : '<span class="st">미풀이</span>';
+      h += `<button class="qlink" onclick="startOneQ('${x.id}')">
+        <span class="rn">${x.r}회 ${x.n}번</span><span>${esc(x.topic)}</span>${st}</button>`;
+    });
+  } else if(!made.length){
+    h += `<div class="h">이 단원에 직접 연결된 기출·예상문제는 없습니다</div>`;
+  }
+  $('read-qs').innerHTML=h;
+  go('s-read'); window.scrollTo(0,0);
+}
+function startMadeQuiz(sid){
+  const f=findSec(sid); if(!f || !(f.s.made||[]).length){ toast('이 단원 예상문제가 없습니다'); return; }
+  const list=f.s.made.map((m,i)=>Object.assign({}, m, {made:true, qid:sid+'-m'+i}));
+  begin(shuffle(list), f.s.t.replace(/★+/g,'').trim()+' 예상문제', ()=>startMadeQuiz(sid), false);
+}
+function startSecQuiz(sid){
+  const f=findSec(sid); if(!f) return;
+  const list=f.s.qs.map(x=>qById(x.id)).filter(Boolean);
+  begin(shuffle(list), f.s.t.replace(/★+/g,'').trim()+' 기출', ()=>startSecQuiz(sid), false);
+}
+function startOneQ(qid){
+  const q=qById(qid); if(!q){ toast('이 문항이 든 문제팩이 없습니다'); return; }
+  begin([q], `${q.r}회 ${q.n}번`, ()=>startOneQ(qid), false);
+}
+
+/* ══ 출제 ══ */
+let R = null, TICK = null;
+function begin(list, title, retry, timed){
+  if(!list.length){ toast('풀 문제가 없습니다'); return; }
+  R = {qs:list, i:0, log:[], title, retry, timed, left: timed ? 80*60 : 0};
+  $('again').onclick = retry;
+  clearInterval(TICK);
+  if(timed){
+    TICK = setInterval(()=>{
+      R.left--;
+      if(R.left<=0){ clearInterval(TICK); toast('80분이 지났습니다'); R.left=0; }
+      drawTime();
+    },1000);
+  }
+  go('s-quiz'); drawQ(); window.scrollTo(0,0);
+}
+function drawTime(){
+  if(!R.timed){ $('tm').textContent=''; return; }
+  const m=Math.floor(R.left/60), s=R.left%60;
+  $('tm').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  $('tm').style.color = R.left<300 ? 'var(--ju)' : 'var(--hoe)';
+}
+function startRound(r){
+  const p = PACKS.find(x=>x.round===r);
+  begin(p.qs.slice().sort((a,b)=>a.n-b.n), p.title, ()=>startRound(r), true);
+}
+function startEra(e){ const l=ALL.filter(q=>q.era===e); begin(shuffle(l), ERA_NM[e], ()=>startEra(e), false); }
+function startMock(){ begin(shuffle(ALL).slice(0,50), '무작위 모의고사', startMock, true); }
+function startDue(){ begin(shuffle(dueIds().map(qById)), '오늘 복습', startDue, false); }
+function startWrong(){ begin(shuffle(Object.keys(S.srs).map(qById).filter(Boolean)), '틀린 문제 전부', startWrong, false); }
+function startStar(){ begin(shuffle(S.star.map(qById).filter(Boolean)), '별표한 문제', startStar, false); }
+function quitQuiz(){
+  if(R && R.log.length && !confirm('지금 나가면 이번 회차 결과 화면은 보지 못합니다.\n푼 기록은 이미 저장되었습니다. 나갈까요?')) return;
+  clearInterval(TICK); go('s-home'); drawHome(); drawRounds(); drawEras();
+}
+
+/* ══ 문제 ══ */
+function drawQ(){
+  const q = R.qs[R.i];
+  $('pn').textContent = `${R.i+1} / ${R.qs.length}`;
+  $('pgi').style.width = pct(R.i, R.qs.length)+'%';
+  drawTime();
+  if(q.made){                                  // 교재 예상문제
+    $('qmeta').innerHTML = `<span class="tag">교재문제</span>
+      <span class="tag">${esc(q.unit||'')}</span>`;
+    $('qimg').style.display='none';
+    $('qstem').style.display='block';
+    $('qstem').textContent = q.stem;
+    $('opts').innerHTML = q.opts.map((t,i)=>
+      `<button class="opt txt" onclick="pick(${i+1})">${esc(t)}</button>`).join('');
+    $('sol').innerHTML=''; $('qbtns').innerHTML='';
+    return;
+  }
+  const on = S.star.includes(q.id);
+  $('qmeta').innerHTML = `<span class="tag">${q.r}회 ${q.n}번</span>
+    <span class="tag">${ERA_NM[q.era]}</span><span class="tag pt">${q.pts}점</span>
+    <button class="star ${on?'on':''}" id="star" onclick="toggleStar('${q.id}')"
+      aria-label="별표">${on?'★':'☆'}</button>`;
+  if($('qstem')) $('qstem').style.display='none';
+  $('qimg').style.display='block';
+  $('qimg').src = q.img;
+  $('qimg').alt = `${q.r}회 ${q.n}번 문제`;
+  $('opts').innerHTML = CIRCLE.map((c,i)=>
+    `<button class="opt" onclick="pick(${i+1})" aria-label="${i+1}번">${c}</button>`).join('');
+  $('sol').innerHTML = '';
+  $('qbtns').innerHTML = '';
+}
+function toggleStar(id){
+  const i = S.star.indexOf(id);
+  if(i<0) S.star.push(id); else S.star.splice(i,1);
+  save();
+  const b = $('star');
+  b.classList.toggle('on', i<0); b.textContent = i<0 ? '★' : '☆';
+}
+function pick(sel){
+  const q = R.qs[R.i];
+  if(q.made){                                  // 교재 예상문제 채점
+    const ok = sel === q.ans;
+    document.querySelectorAll('#opts .opt').forEach((b,i)=>{
+      b.disabled = true;
+      if(i+1===q.ans) b.classList.add('ok');
+      else if(i+1===sel) b.classList.add('no');
+    });
+    if(S.made) S.made[q.qid] = ok?'o':'x';
+    save();
+    R.log.push({q, ok, sel});
+    let mh = `<div class="sol"><div class="verdict ${ok?'ok':'no'}">
+      ${ok?'정답입니다':`틀렸습니다 — 답은 ${q.ans}번`}</div>
+      <div class="why"><b>핵심 정리</b>${esc(q.why)}</div>`;
+    if(q.sid){ mh += `<button class="btn sub" style="margin-top:10px" onclick="openSec('${q.sid}','s-quiz')">📖 교재에서 이 단원 읽기</button>`; }
+    mh += `</div>`;
+    $('sol').innerHTML = mh;
+    const last0 = R.i === R.qs.length-1;
+    $('qbtns').innerHTML = `<button class="btn" onclick="next()">${last0?'결과 보기':'다음 문제'}</button>`;
+    $('qbtns').firstChild.focus();
+    return;
+  }
+  const voided = q.a === 0;                 // 출제 오류로 무효 처리된 문항
+  const ok = voided || sel === q.a;
+  document.querySelectorAll('#opts .opt').forEach((b,i)=>{
+    b.disabled = true;
+    if(voided){ if(i+1===sel) b.classList.add('ok'); }
+    else if(i+1===q.a) b.classList.add('ok');
+    else if(i+1===sel) b.classList.add('no');
+  });
+  S.done[q.id] = ok ? 'o' : 'x';
+  if(ok){ if(S.srs[q.id]) srsRight(q.id); } else srsWrong(q.id);
+  save();
+  R.log.push({q, ok, sel});
+
+  let h = `<div class="sol"><div class="verdict ${ok?'ok':'no'}">
+    ${voided ? '출제 오류로 무효 처리된 문항입니다 — 모두 정답'
+             : (ok ? '정답입니다' : `틀렸습니다 — 답은 ${CIRCLE[q.a-1]}번`)}</div>`;
+  if(q.o && q.o.length === 5){
+    h += `<div class="why"><b>자료를 이렇게 읽습니다</b>${esc(q.why)}</div>
+      <div class="dis"><div class="dis-h">선지 다섯 개 — 이건 사실 어디 것인가</div>`;
+    q.o.forEach((t,i)=>{
+      const cls = (i+1===q.a) ? 'ans' : (i+1===sel ? 'pick' : '');
+      h += `<div class="line ${cls}"><span class="no">${CIRCLE[i]}</span><p>${esc(t)}</p></div>`;
+    });
+    h += `<div class="refline">근거 — ${esc(q.ref)} · ${esc(q.topic)}</div>`;
+    if(STUDY && STUDY.q2s && STUDY.q2s[q.id]){
+      h += `<button class="btn sub" style="margin-top:10px" onclick="openSec('${STUDY.q2s[q.id]}','s-quiz')">📖 교재에서 이 부분 읽기</button>`;
+    }
+  } else {
+    h += `<div class="why"><b>이 회차는 아직 해설이 없습니다</b>
+      ${q.r}회 ${q.n}번 · ${ERA_NM[q.era]} — <b>${esc(VOLS[q.v])}</b>의 해당 단원을 펴서
+      다섯 선지가 각각 어느 시대 것인지 직접 확인해 보세요. 그 과정 자체가 가장 좋은 공부입니다.</div>`;
+  }
+  h += `</div>`;
+  $('sol').innerHTML = h;
+
+  const last = R.i === R.qs.length-1;
+  $('qbtns').innerHTML = `<button class="btn" onclick="next()">${last?'결과 보기':'다음 문제'}</button>`;
+  $('qbtns').firstChild.focus();
+}
+function next(){
+  R.i++;
+  if(R.i >= R.qs.length){ drawResult(); return; }
+  drawQ(); window.scrollTo(0,0);
+}
+
+/* ══ 결과 ══ */
+function drawResult(){
+  clearInterval(TICK);
+  const n = R.log.length, ok = R.log.filter(l=>l.ok).length;
+  // 배점대로 채점 (실제 시험과 동일). 배점 정보가 없으면 문항 수 기준.
+  const tot = R.log.reduce((s,l)=>s+(l.q.pts||2), 0);
+  const got = R.log.filter(l=>l.ok).reduce((s,l)=>s+(l.q.pts||2), 0);
+  const p = pct(got, tot);
+  let band;
+  const madeRun = R.qs[0] && R.qs[0].made;
+  if(madeRun) band = ok===n ? '이 단원 예상문제를 전부 맞혔습니다' : `정답률 ${p}% — 틀린 문항은 교재로 다시 확인하세요`;
+  else if(p>=80) band = '1급 기준(80점 이상)을 넘었습니다';
+  else if(p>=70) band = `2급 구간(70~79점) — 1급까지 ${80-p}점`;
+  else if(p>=60) band = `3급 구간(60~69점) — 1급까지 ${80-p}점`;
+  else band = '무급 구간(59점 이하) — 틀린 문제부터 잡으세요';
+
+  $('score').innerHTML = `<div class="gr">${esc(R.title)}</div>
+    <div class="pt">${p}<em>점</em></div>
+    <div class="de">${n}문항 중 ${ok}문항 정답${R.qs[0]&&R.qs[0].made?"":` · 배점 ${got}/${tot}점`}</div>
+    <div class="band">${band}</div>`;
+
+  const bad = R.log.filter(l=>!l.ok);
+  if(bad.length){
+    let h = `<h2 class="t">틀린 ${bad.length}문항 — 내일 복습에 올렸습니다</h2>`;
+    bad.forEach(l=>{
+      const q=l.q;
+      if(q.made){
+        h += `<div class="rv-i"><span class="mk">✕</span><span class="qq">${esc(q.unit||'교재문제')}
+          <span>정답 ${q.ans}번 · ${esc((q.why||'').slice(0,40))}</span></span></div>`;
+      } else {
+        h += `<div class="rv-i"><span class="mk">✕</span><span class="qq">${q.r}회 ${q.n}번 · ${esc(q.topic)}
+          <span>${ERA_NM[q.era]} — ${esc(q.ref)}</span></span></div>`;
+      }
+    });
+    $('review').innerHTML = h;
+  } else {
+    $('review').innerHTML = `<div class="empty"><span class="big">全</span>전부 맞혔습니다.<br>이 범위는 넘어가셔도 됩니다.</div>`;
+  }
+  $('review').style.display = '';
+  S.runs++; save();
+  drawHome(); drawRounds(); drawEras();
+  go('s-result'); window.scrollTo(0,0);
+}
+
+/* ══ 파일 ══ */
+function saveFile(){
+  const b = new Blob([JSON.stringify(S)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b); a.download = `한국사_풀이기록_${today()}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('기록을 내려받았습니다');
+}
+function loadFile(inp){
+  const f = inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const d = JSON.parse(r.result);
+      if(!d || typeof d!=='object' || !('done' in d)) throw 0;
+      S = Object.assign({done:{},srs:{},star:[],runs:0}, d);
+      save(); drawHome(); drawRounds(); drawEras(); toast('기록을 불러왔습니다');
+    }catch(e){ toast('이 파일은 읽을 수 없습니다'); }
+    inp.value = '';
+  };
+  r.readAsText(f);
+}
+async function loadPack(inp){
+  const fs = Array.from(inp.files||[]); if(!fs.length) return;
+  let add = 0, dup = 0, bad = 0;
+  for(let i=0;i<fs.length;i++){
+    toast(`문제팩 넣는 중 ${i+1}/${fs.length}`);
+    try{
+      const j = JSON.parse(await fs[i].text());
+      const list = Array.isArray(j) ? j : [j];      // 묶음 파일은 배열로 온다
+      let any = false;
+      for(const p of list){
+        if(p && p.study && p.vols){                     // 교재팩
+          STUDY = p; await dbPutStudy(p); add++; any = true; continue;
+        }
+        if(!p || !p.round || !Array.isArray(p.qs) || !p.qs.length){ continue; }
+        if(PACKS.some(x=>x.round===p.round)){ dup++; any = true; continue; }
+        await dbPut(p); PACKS.push(p); add++; any = true;
+      }
+      if(!any) bad++;
+    }catch(e){ bad++; }
+  }
+  rebuild(); drawHome(); drawRounds(); drawEras();
+  inp.value = '';
+  const m = [];
+  if(add) m.push(`${add}개 회차 추가`);
+  if(dup) m.push(`${dup}개는 이미 있음`);
+  if(bad) m.push(`${bad}개는 읽지 못함`);
+  toast(m.join(' · ') || '변경 없음');
+}
+function resetAll(){
+  if(!confirm('푼 기록·복습 일정·별표를 모두 지웁니다. 문제팩은 남습니다.\n되돌릴 수 없습니다. 계속할까요?')) return;
+  S = {done:{}, srs:{}, star:[], made:{}, runs:0}; save();
+  drawHome(); drawRounds(); drawEras(); toast('기록을 지웠습니다');
+}
+async function clearPacks(){
+  if(!confirm('넣어 둔 문제팩과 교재팩을 모두 지웁니다. 푼 기록은 남습니다.\n계속할까요?')) return;
+  await dbClear(); PACKS = []; rebuild();
+  try{ if(DB && DB.objectStoreNames.contains('study')){ await new Promise(r=>{const t=DB.transaction('study','readwrite').objectStore('study').clear(); t.onsuccess=r; t.onerror=r;}); } }catch(e){}
+  STUDY = null;
+  drawHome(); drawRounds(); drawEras(); toast('문제팩을 지웠습니다');
+}
+
+/* ══ 키보드 ══ */
+document.addEventListener('keydown', e => {
+  if(!$('s-quiz').classList.contains('on')) return;
+  if(['1','2','3','4','5'].includes(e.key)){
+    const b = document.querySelectorAll('#opts .opt')[+e.key-1];
+    if(b && !b.disabled) b.click();
+  } else if(e.key==='Enter' || e.key===' '){
+    const b = $('qbtns').firstChild;
+    if(b){ e.preventDefault(); b.click(); }
+  }
+});
+
+/* ══ 시작 ══ */
+(async function(){
+  try{
+    await openDB();
+    PACKS = await dbAll();
+    STUDY = await dbGetStudy();
+  }catch(e){ toast('저장소를 열지 못했습니다 — 이번 세션에만 문제팩이 남습니다'); }
+  rebuild(); drawHome(); drawRounds(); drawEras();
+})();
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+
+</body>
+</html>

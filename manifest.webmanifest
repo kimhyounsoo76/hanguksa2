@@ -1,0 +1,25 @@
+{
+  "name": "한국사 기출 문제풀이",
+  "short_name": "한국사 기출",
+  "description": "한국사능력검정시험 심화 57~78회 기출 1,100문항 + 교재 학습",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5efe2",
+  "theme_color": "#2b5f75",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "/hanguksa2/"
+}
