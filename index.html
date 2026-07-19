@@ -390,6 +390,7 @@ function rebuild(){
   PACKS.sort((a,b)=>b.round-a.round);
   ALL = [];
   PACKS.forEach(p=>p.qs.forEach(q=>ALL.push(q)));
+  buildMadeBank();
 }
 
 /* ══ 상태 ══ */
@@ -411,7 +412,24 @@ function today(){ return new Date().toISOString().slice(0,10); }
 function addDays(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
 function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2000); }
 function go(id){ document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on', s.id===id)); }
-function qById(id){ return ALL.find(q=>q.id===id); }
+let MADEBANK = {};   // qid -> 교재 예상문제 객체
+function buildMadeBank(){
+  MADEBANK = {};
+  if(!STUDY) return;
+  for(const v of Object.values(STUDY.vols)){
+    for(const sec of v.secs){
+      (sec.made||[]).forEach((m,i)=>{
+        const qid = sec.id+'-m'+i;
+        MADEBANK[qid] = Object.assign({}, m, {made:true, qid, id:qid});
+      });
+    }
+  }
+}
+function qById(id){
+  const q = ALL.find(q=>q.id===id);
+  if(q) return q;
+  return MADEBANK[id] || null;   // 교재 예상문제도 조회
+}
 
 /* ══ D-day ══ */
 (function(){
@@ -435,9 +453,10 @@ function srsWrong(id){ S.srs[id] = {b:0, d:today()}; }
 
 /* ══ 홈 ══ */
 function drawHome(){
-  const seen = Object.keys(S.done).filter(id=>qById(id)).length;
+  const isGi = id => ALL.find(q=>q.id===id);   // 기출만
+  const seen = Object.keys(S.done).filter(isGi).length;
   $('st-sum').textContent = `${seen} / ${ALL.length}문항`;
-  const ok = Object.keys(S.done).filter(id=>qById(id) && S.done[id]==='o').length;
+  const ok = Object.keys(S.done).filter(id=>isGi(id) && S.done[id]==='o').length;
   $('st-sub').textContent = seen ? `정답률 ${pct(ok,seen)}%` : '아직 시작 전';
 
   let h = '';
@@ -584,7 +603,7 @@ function openSec(sid, from){
 }
 function startMadeQuiz(sid){
   const f=findSec(sid); if(!f || !(f.s.made||[]).length){ toast('이 단원 예상문제가 없습니다'); return; }
-  const list=f.s.made.map((m,i)=>Object.assign({}, m, {made:true, qid:sid+'-m'+i}));
+  const list=f.s.made.map((m,i)=>MADEBANK[sid+'-m'+i]).filter(Boolean);
   begin(shuffle(list), f.s.t.replace(/★+/g,'').trim()+' 예상문제', ()=>startMadeQuiz(sid), false);
 }
 function startSecQuiz(sid){
@@ -681,6 +700,8 @@ function pick(sel){
       else if(i+1===sel) b.classList.add('no');
     });
     if(S.made) S.made[q.qid] = ok?'o':'x';
+    S.done[q.qid] = ok?'o':'x';
+    if(ok){ if(S.srs[q.qid]) srsRight(q.qid); } else srsWrong(q.qid);
     save();
     R.log.push({q, ok, sel});
     let mh = `<div class="sol"><div class="verdict ${ok?'ok':'no'}">
@@ -868,9 +889,7 @@ document.addEventListener('keydown', e => {
   rebuild(); drawHome(); drawRounds(); drawEras();
 })();
 
-if('serviceWorker' in navigator && location.protocol.startsWith('http')){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 </script>
 
 </body>
