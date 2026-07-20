@@ -179,6 +179,16 @@ input[type=file]{display:none}
 .relic .rl{font-size:13px}
 .relic .rl a{color:var(--cheong,#2b5f75);text-decoration:none;font-weight:600}
 .relic .rl a:active{opacity:.6}
+/* 교재 읽기 — 고정 상단 바 + 하단 네비 */
+.read-bar{position:sticky;top:0;z-index:20;background:var(--bg,#f4f1ea);padding:8px 0 6px;
+  display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--line,#e5e0d8);margin-bottom:8px}
+.read-nav{display:flex;gap:10px;margin:22px 0 8px}
+.read-nav button{flex:1;padding:13px;border-radius:12px;border:1px solid var(--line,#e5e0d8);
+  background:var(--cheong,#2b5f75);color:#fff;font-size:15px;font-weight:700}
+.read-nav button.ghost{background:var(--paper,#fff);color:var(--cheong,#2b5f75)}
+.fab-top{position:fixed;right:16px;bottom:20px;z-index:30;width:48px;height:48px;border-radius:50%;
+  border:none;background:var(--cheong,#2b5f75);color:#fff;font-size:20px;box-shadow:0 3px 10px rgba(0,0,0,.25);
+  cursor:pointer;opacity:.92}
 </style>
 </head>
 <body>
@@ -300,12 +310,18 @@ input[type=file]{display:none}
 </section>
 
 <section class="scr" id="s-read">
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
+  <div class="read-bar">
     <button class="btn sub" id="read-back" style="width:auto;padding:8px 14px">← 단원 목록</button>
+    <span id="read-crumb" style="font-size:13px;color:var(--hoe,#888);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
   </div>
   <h2 class="t" id="read-title"></h2>
   <div class="doc" id="read-doc"></div>
   <div class="qlinks" id="read-qs"></div>
+  <div class="read-nav">
+    <button class="ghost" onclick="document.getElementById('s-read').scrollIntoView({behavior:'smooth'});window.scrollTo({top:0,behavior:'smooth'})">↑ 맨 위로</button>
+    <button id="read-next" onclick="nextSec()">다음 단원 →</button>
+  </div>
+  <button class="fab-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="맨 위로">↑</button>
 </section>
 
 <section class="scr" id="s-lect">
@@ -642,6 +658,14 @@ function drawSecs(v){
   $('sec-list').innerHTML=h;
   go('s-sec'); window.scrollTo(0,0);
 }
+function nextSec(){
+  const f=findSec(CUR_SEC); if(!f) return;
+  const vol=STUDY.vols[f.v]; const idx=vol.secs.findIndex(x=>x.id===CUR_SEC);
+  if(idx>=0 && idx<vol.secs.length-1){
+    openSec(vol.secs[idx+1].id, SEC_FROM);
+    window.scrollTo({top:0});
+  }
+}
 function findSec(sid){
   for(const v of Object.keys(STUDY ? STUDY.vols : {})){
     const vol=STUDY.vols[v]; if(!vol) continue;
@@ -656,6 +680,15 @@ function openSec(sid, from){
     : SEC_FROM==='s-lview' ? '← 강의로 돌아가기' : '← 단원 목록';
   $('read-back').onclick = ()=>{ if(SEC_FROM==='s-quiz'||SEC_FROM==='s-lview'){ go(SEC_FROM); } else drawSecs(CUR_V); };
   $('read-title').textContent = f.s.t;
+  if($('read-crumb')) $('read-crumb').textContent = f.s.t;
+  // 다음 단원 버튼: 같은 권 안에서 다음 sec
+  const vol=STUDY.vols[f.v]; const idx=vol.secs.findIndex(x=>x.id===sid);
+  const nb=$('read-next');
+  if(nb){
+    if(idx>=0 && idx<vol.secs.length-1){
+      nb.style.display=''; nb.textContent=`다음 단원 →`;
+    } else { nb.style.display='none'; }
+  }
   $('read-doc').innerHTML = f.s.html;
   let h='';
   const made = f.s.made || [];
