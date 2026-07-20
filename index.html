@@ -227,15 +227,7 @@ input[type=file]{display:none}
     <span>표시해 둔 것만</span></span>
     <span class="cnt" id="cnt-star">0문항</span></button>
 
-  <h2 class="t">문제 풀기</h2>
-  <button class="mode" onclick="packIn.click()">
-    <span class="ic">＋</span><span class="tx"><b>문제팩 넣기</b>
-    <span>문제팩 파일을 여러 개 한 번에 선택</span></span>
-    <span class="cnt" id="cnt-pack">—</span></button>
-  <button class="mode" onclick="go('s-round')">
-    <span class="ic">回</span><span class="tx"><b>회차별</b>
-    <span>실제 시험처럼 50문항을 순서대로</span></span>
-    <span class="cnt" id="cnt-round">—</span></button>
+  <h2 class="t">공부하기</h2>
   <button class="mode" id="m-lect" onclick="drawLects();go('s-lect')">
     <span class="ic">🎓</span><span class="tx"><b>연수 강의별</b>
     <span>1~60강 슬라이드 → 교재 → 문제 순서로</span></span>
@@ -244,6 +236,12 @@ input[type=file]{display:none}
     <span class="ic">📖</span><span class="tx"><b>교재 학습</b>
     <span>단원 읽기 · 예상문제 · 그 단원 기출까지 한 번에</span></span>
     <span class="cnt" id="cnt-study">—</span></button>
+
+  <h2 class="t">문제 풀기</h2>
+  <button class="mode" onclick="go('s-round')">
+    <span class="ic">回</span><span class="tx"><b>회차별</b>
+    <span>실제 시험처럼 50문항을 순서대로</span></span>
+    <span class="cnt" id="cnt-round">—</span></button>
   <button class="mode" onclick="go('s-era')">
     <span class="ic">代</span><span class="tx"><b>시대별</b>
     <span>여러 회차를 시대 단위로 묶어서</span></span>
@@ -252,6 +250,10 @@ input[type=file]{display:none}
     <span class="ic">試</span><span class="tx"><b>무작위 모의고사</b>
     <span>전 회차에서 50문항 · 점수가 곧 등급</span></span>
     <span class="cnt">50문항</span></button>
+  <button class="mode" onclick="packIn.click()">
+    <span class="ic">＋</span><span class="tx"><b>문제팩 넣기</b>
+    <span>문제팩 파일을 여러 개 한 번에 선택</span></span>
+    <span class="cnt" id="cnt-pack">—</span></button>
 
   <h2 class="t">기록</h2>
   <div class="row">
@@ -318,10 +320,10 @@ input[type=file]{display:none}
   <div class="doc" id="read-doc"></div>
   <div class="qlinks" id="read-qs"></div>
   <div class="read-nav">
-    <button class="ghost" onclick="document.getElementById('s-read').scrollIntoView({behavior:'smooth'});window.scrollTo({top:0,behavior:'smooth'})">↑ 맨 위로</button>
+    <button class="ghost" id="read-doquiz">📝 이 단원 문제</button>
     <button id="read-next" onclick="nextSec()">다음 단원 →</button>
   </div>
-  <button class="fab-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="맨 위로">↑</button>
+  <button class="fab-top" id="read-fab" aria-label="단원 목록으로">≣</button>
 </section>
 
 <section class="scr" id="s-lect">
@@ -676,9 +678,11 @@ function findSec(sid){
 function openSec(sid, from){
   const f=findSec(sid); if(!f){ toast('교재팩을 먼저 넣어 주세요'); return; }
   CUR_SEC=sid; SEC_FROM=from||'s-sec'; CUR_V=f.v;
+  const goBack = ()=>{ if(SEC_FROM==='s-quiz'||SEC_FROM==='s-lview'){ go(SEC_FROM); } else drawSecs(CUR_V); };
   $('read-back').textContent = SEC_FROM==='s-quiz' ? '← 문제로 돌아가기'
     : SEC_FROM==='s-lview' ? '← 강의로 돌아가기' : '← 단원 목록';
-  $('read-back').onclick = ()=>{ if(SEC_FROM==='s-quiz'||SEC_FROM==='s-lview'){ go(SEC_FROM); } else drawSecs(CUR_V); };
+  $('read-back').onclick = goBack;
+  if($('read-fab')) $('read-fab').onclick = goBack;   // 우하단 버튼 = 목록으로
   $('read-title').textContent = f.s.t;
   if($('read-crumb')) $('read-crumb').textContent = f.s.t;
   // 다음 단원 버튼: 같은 권 안에서 다음 sec
@@ -688,6 +692,13 @@ function openSec(sid, from){
     if(idx>=0 && idx<vol.secs.length-1){
       nb.style.display=''; nb.textContent=`다음 단원 →`;
     } else { nb.style.display='none'; }
+  }
+  // 이 단원 문제 버튼: 문제가 있으면 문제 영역으로 스크롤, 없으면 숨김
+  const dq=$('read-doquiz');
+  if(dq){
+    const hasQ = (f.s.made||[]).length || (f.s.qs||[]).length;
+    if(hasQ){ dq.style.display=''; dq.onclick=()=>{ const el=$('read-qs'); if(el) el.scrollIntoView({behavior:'smooth'}); }; }
+    else dq.style.display='none';
   }
   $('read-doc').innerHTML = f.s.html;
   let h='';
