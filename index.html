@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#2b5f75">
+<meta name="theme-color" content="#1B3B6F">
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <title>한국사 기출 풀이 — 심화 1급</title>
@@ -20,6 +20,7 @@
   --meok:#22252B; --hoe:#6E7C8C; --seon:#D9DEE4;
   --ju:#C0392B; --ok:#1E6B4F; --byeol:#B8860B;
   --r:10px; --sh:0 1px 2px rgba(13,31,60,.06),0 4px 16px rgba(13,31,60,.06);
+  --bg:#F5F6F4; --line:#E3E7EC; --cheong-2:#2C5090;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
@@ -62,24 +63,30 @@ h2.t:first-child{margin-top:4px}
   background:var(--paper);border:1px solid var(--seon);border-radius:var(--r);margin-bottom:8px;box-shadow:var(--sh)}
 .mode:hover:not(:disabled){border-color:var(--cheong);transform:translateY(-1px);transition:.12s}
 .mode:disabled{opacity:.42;cursor:default}
-.mode .ic{width:34px;height:34px;border-radius:8px;background:var(--cheong-l);color:var(--cheong);
-  display:grid;place-items:center;font-family:"Gowun Batang",serif;font-size:17px;flex:none}
-.mode.hot .ic{background:#FBE9E7;color:var(--ju)}
+.mode .ic{width:36px;height:36px;border-radius:10px;background:var(--cheong);color:#fff;
+  display:grid;place-items:center;flex:none}
+.mode .ic svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mode.ic-2 .ic{background:var(--cheong-2)}
+.mode.ic-plain .ic{background:#EEF2F7;color:var(--cheong)}
+.mode.hot .ic{background:var(--ju);color:#fff}
 .mode .tx{flex:1;min-width:0}
-.mode .tx b{display:block;font-size:15px}
-.mode .tx span{display:block;font-size:12px;color:var(--hoe)}
-.mode .cnt{font-size:12px;color:var(--hoe);flex:none;font-variant-numeric:tabular-nums}
-/* 홈 그룹 카드 */
-.grp{background:var(--paper);border:1px solid var(--seon);border-radius:16px;padding:6px;margin-bottom:14px;box-shadow:var(--sh)}
-.grp-h{display:flex;align-items:center;gap:8px;padding:10px 12px 6px;font-weight:800;font-size:16px;color:var(--meok,#2b2b2b)}
-.grp-h .ge{font-size:19px}
-.grp .mode{border:none;box-shadow:none;margin-bottom:2px;border-radius:11px;background:transparent}
+.mode .tx b{display:block;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.mode .tx span{display:block;font-size:12px;color:var(--hoe);margin-top:1px}
+.mode .cnt{font-size:12px;color:var(--hoe);flex:none;font-variant-numeric:tabular-nums;font-weight:500}
+/* 홈 그룹 (배경색 구분 방식) */
+.grp{margin-bottom:18px}
+.grp-h{padding:2px 2px 8px;font-weight:600;font-size:12px;color:#8A96A3;letter-spacing:.03em}
+.grp-h .ge{display:none}
+.grp .mode{border:none;box-shadow:none;margin-bottom:6px;border-radius:12px;background:#F7F9FB}
 .grp .mode:hover:not(:disabled){background:var(--cheong-l);transform:none;border:none}
-.mode .cnt.badge{background:var(--ju,#d9534f);color:#fff;padding:2px 9px;border-radius:11px;font-weight:800;font-size:12.5px}
-.mode .cnt.badge0{background:transparent;color:var(--hoe)}
+.grp.rv .mode{background:#FDF3F1}
+.grp.rv .mode .tx span{color:#B08078}
+.mode .cnt.badge{background:var(--ju);color:#fff;padding:3px 10px;border-radius:8px;font-weight:600;font-size:12px}
+.mode .cnt.badge0{background:transparent;color:var(--hoe);padding:0;font-weight:400}
+.mode .go{color:#C3CBD3;font-size:18px;flex:none}
 details.more{margin:2px 0 14px}
 details.more summary{cursor:pointer;padding:11px 14px;border-radius:12px;background:var(--paper);border:1px solid var(--seon);
-  font-weight:700;font-size:14px;color:var(--hoe);list-style:none;box-shadow:var(--sh)}
+  font-weight:600;font-size:14px;color:var(--hoe);list-style:none;box-shadow:var(--sh)}
 details.more summary::-webkit-details-marker{display:none}
 details.more summary::after{content:" ▾";float:right}
 details.more[open] summary::after{content:" ▴"}
@@ -231,53 +238,53 @@ input[type=file]{display:none}
   </div>
 
   <div class="grp">
-    <div class="grp-h"><span class="ge">📕</span> 공부하기</div>
+    <div class="grp-h">공부하기</div>
     <button class="mode" id="m-lect" onclick="drawLects();go('s-lect')">
-      <span class="ic">🎓</span><span class="tx"><b>연수 강의별</b>
-      <span>강의 슬라이드 → 교재 → 문제 순서로</span></span>
-      <span class="cnt" id="cnt-lect">—</span></button>
-    <button class="mode" id="m-study" onclick="drawStudy()">
-      <span class="ic">📖</span><span class="tx"><b>교재 학습</b>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M7 4v16l13 -8z"/></svg></span><span class="tx"><b>연수 강의별</b>
+      <span>강의 → 교재 → 문제 순서로</span></span>
+      <span class="cnt" id="cnt-lect">—</span><span class="go">›</span></button>
+    <button class="mode ic-2" id="m-study" onclick="drawStudy()">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"/><path d="M3 6v13"/><path d="M12 6v13"/><path d="M21 6v13"/></svg></span><span class="tx"><b>교재 학습</b>
       <span>단원 읽고 · 예상문제 · 기출까지</span></span>
-      <span class="cnt" id="cnt-study">—</span></button>
+      <span class="cnt" id="cnt-study">—</span><span class="go">›</span></button>
   </div>
 
   <div class="grp">
-    <div class="grp-h"><span class="ge">✏️</span> 문제 풀기</div>
-    <button class="mode" onclick="go('s-round')">
-      <span class="ic">回</span><span class="tx"><b>회차별 기출</b>
+    <div class="grp-h">문제 풀기</div>
+    <button class="mode ic-plain" onclick="go('s-round')">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M9 6l11 0"/><path d="M9 12l11 0"/><path d="M9 18l11 0"/><path d="M5 6l0 .01"/><path d="M5 12l0 .01"/><path d="M5 18l0 .01"/></svg></span><span class="tx"><b>회차별 기출</b>
       <span>실제 시험처럼 50문항 순서대로</span></span>
-      <span class="cnt" id="cnt-round">—</span></button>
-    <button class="mode" onclick="go('s-era')">
-      <span class="ic">代</span><span class="tx"><b>시대별 기출</b>
+      <span class="cnt" id="cnt-round">—</span><span class="go">›</span></button>
+    <button class="mode ic-plain" onclick="go('s-era')">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/></svg></span><span class="tx"><b>시대별 기출</b>
       <span>선사·삼국·고려·조선… 시대로 묶어서</span></span>
-      <span class="cnt" id="cnt-era">—</span></button>
-    <button class="mode" onclick="startMock()">
-      <span class="ic">試</span><span class="tx"><b>모의고사</b>
+      <span class="cnt" id="cnt-era">—</span><span class="go">›</span></button>
+    <button class="mode ic-plain" onclick="startMock()">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"/><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/><path d="M9 12l2 2l4 -4"/></svg></span><span class="tx"><b>모의고사</b>
       <span>전 회차 무작위 50문항 · 등급 확인</span></span>
-      <span class="cnt">50문항</span></button>
+      <span class="cnt">50문항</span><span class="go">›</span></button>
   </div>
 
-  <div class="grp">
-    <div class="grp-h"><span class="ge">🔁</span> 복습하기</div>
+  <div class="grp rv">
+    <div class="grp-h">복습하기</div>
     <button class="mode hot" id="m-due" onclick="startDue()">
-      <span class="ic">復</span><span class="tx"><b>오늘 복습</b>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"/><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/></svg></span><span class="tx"><b>오늘 복습</b>
       <span>1일 → 3일 → 7일 간격 자동 복습</span></span>
       <span class="cnt" id="cnt-due">0문항</span></button>
-    <button class="mode" id="m-wrong" onclick="startWrong()">
-      <span class="ic">✕</span><span class="tx"><b>틀린 문제 전부</b>
+    <button class="mode hot" id="m-wrong" onclick="startWrong()">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></span><span class="tx"><b>틀린 문제 전부</b>
       <span>기간 상관없이 몰아서 다시 풀기</span></span>
       <span class="cnt" id="cnt-wrong">0문항</span></button>
-    <button class="mode" id="m-star" onclick="startStar()">
-      <span class="ic">★</span><span class="tx"><b>별표한 문제</b>
+    <button class="mode hot" id="m-star" onclick="startStar()">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/></svg></span><span class="tx"><b>별표한 문제</b>
       <span>표시해 둔 것만</span></span>
       <span class="cnt" id="cnt-star">0문항</span></button>
   </div>
 
   <details class="more">
     <summary>⚙️ 자료 넣기 · 기록 관리</summary>
-    <button class="mode" onclick="packIn.click()" style="margin-top:8px">
-      <span class="ic">＋</span><span class="tx"><b>문제팩·교재팩 넣기</b>
+    <button class="mode ic-plain" onclick="packIn.click()" style="margin-top:8px">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 5l0 14"/><path d="M5 12l14 0"/></svg></span><span class="tx"><b>문제팩·교재팩 넣기</b>
       <span>받은 파일을 여러 개 한 번에 선택</span></span>
       <span class="cnt" id="cnt-pack">—</span></button>
     <div class="row">
@@ -719,14 +726,6 @@ function openSec(sid, from){
       nb.style.display=''; nb.textContent=`다음 단원 →`;
     } else { nb.style.display='none'; }
   }
-  // 이 단원 문제 버튼: 문제가 있으면 문제 영역으로 스크롤, 없으면 숨김
-  const dq=$('read-doquiz');
-  if(dq){
-    const hasQ = (f.s.made||[]).length || (f.s.qs||[]).length;
-    if(hasQ){ dq.style.display=''; dq.onclick=()=>{ const el=$('read-qs'); if(el) el.scrollIntoView({behavior:'smooth'}); }; }
-    else dq.style.display='none';
-  }
-
   $('read-doc').innerHTML = f.s.html;
   let h='';
   const made = f.s.made || [];
