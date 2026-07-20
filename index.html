@@ -230,7 +230,7 @@ input[type=file]{display:none}
     <span class="ic">🎓</span><span class="tx"><b>연수 강의별</b>
     <span>1~60강 슬라이드 → 교재 → 문제 순서로</span></span>
     <span class="cnt" id="cnt-lect">—</span></button>
-  <button class="mode" id="m-study" onclick="drawStudy();go('s-study')">
+  <button class="mode" id="m-study" onclick="drawStudy()">
     <span class="ic">📖</span><span class="tx"><b>교재 학습</b>
     <span>단원 읽기 · 예상문제 · 그 단원 기출까지 한 번에</span></span>
     <span class="cnt" id="cnt-study">—</span></button>
@@ -603,6 +603,7 @@ function secStat(sec){
 }
 function drawStudy(){
   if(!STUDY){
+    go('s-study');
     $('study-vols').innerHTML='';
     $('study-note').innerHTML=`<b>교재팩이 아직 없습니다</b><br>
       같이 받은 <b>교재팩_전권.json</b>을 홈 화면의 <b>문제팩 넣기</b>로 넣으면
@@ -622,6 +623,7 @@ function drawStudy(){
   }
   $('study-vols').innerHTML=h;
   $('study-note').innerHTML=`단원을 열면 <b>본문 → 그 단원의 예상문제·기출</b> 순서로 이어집니다.`;
+  go('s-study');
 }
 function drawSecs(v){
   CUR_V = v;
