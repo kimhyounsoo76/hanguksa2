@@ -95,12 +95,15 @@ details.more[open] summary::after{content:" ▴"}
 .u-pc{font-size:11px;color:var(--hoe);font-variant-numeric:tabular-nums}
 
 /* 문제 화면 */
-.qbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:13px}
+.qbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:13px;
+  position:sticky;top:0;z-index:20;background:var(--bg,#f4f1ea);padding:8px 0}
 .qbar .pn{font-variant-numeric:tabular-nums;color:var(--hoe)}
 .qbar .pg{flex:1;height:4px;background:var(--cheong-l);border-radius:2px;overflow:hidden}
 .qbar .pg i{display:block;height:100%;background:var(--cheong);transition:width .2s}
 .qbar .tm{font-variant-numeric:tabular-nums;color:var(--hoe)}
-.qbar .x{padding:2px 8px;color:var(--hoe)}
+.qbar .x{padding:7px 14px;color:var(--cheong,#2b5f75);border:1px solid var(--seon,#ddd);
+  border-radius:9px;background:var(--paper,#fff);font-weight:700;font-size:13px;flex:none}
+.qbar .x:active{background:var(--cheong-l)}
 .qmeta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .tag{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--cheong-l);color:var(--cheong)}
 .tag.pt{background:#F3EFE2;color:#8A6D1F}
@@ -342,7 +345,6 @@ input[type=file]{display:none}
   <div class="doc" id="read-doc"></div>
   <div class="qlinks" id="read-qs"></div>
   <div class="read-nav">
-    <button class="ghost" id="read-doquiz">📝 이 단원 문제</button>
     <button id="read-next" onclick="nextSec()">다음 단원 →</button>
   </div>
   <button class="fab-top" id="read-fab" aria-label="단원 목록으로">≣</button>
@@ -365,10 +367,10 @@ input[type=file]{display:none}
 
 <section class="scr" id="s-quiz">
   <div class="qbar">
+    <button class="x" onclick="quitQuiz()">← 나가기</button>
     <span class="pn" id="pn">1 / 50</span>
     <span class="pg"><i id="pgi"></i></span>
     <span class="tm" id="tm"></span>
-    <button class="x" onclick="quitQuiz()">나가기</button>
   </div>
   <div class="qmeta" id="qmeta"></div>
   <img class="qimg" id="qimg" alt="문제">
@@ -616,15 +618,16 @@ function openLect(n){
   const l = LECT.items.find(x=>x.n===n); if(!l) return;
   $('lv-title').textContent = `${l.n}강 — ${l.title}`;
   const secBtns = sid => {
-    if(!sid || !STUDY) return '';
-    const f = findSec(sid); if(!f) return '';
-    const nm = f.s.t.replace(/★+/g,'').trim();
-    let b = `<button class="btn sub" style="width:auto;padding:9px 14px" onclick="openSec('${sid}','s-lview')">📖 교재 「${esc(nm.length>18?nm.slice(0,18)+'…':nm)}」</button>`;
+    if(!sid) return '';
+    if(!STUDY) return '<div style="font-size:13px;color:var(--hoe,#888);padding:6px 0">📚 교재팩을 넣으면 이 강의 교재·예상문제·기출 버튼이 여기 표시됩니다. (홈 → ⚙️ 자료 넣기)</div>';
+    const f = findSec(sid); if(!f) return '<div style="font-size:13px;color:var(--hoe,#888)">연결된 교재 단원을 찾지 못했습니다.</div>';
+    const nm = f.s.t.replace(/★+/g,'').replace(/^\d+강\.\s*/,'').trim();
+    let b = `<button class="btn sub" style="width:auto;padding:9px 14px" onclick="openSec('${sid}','s-lview')">📖 교재 보기</button>`;
     if((f.s.made||[]).length) b += `<button class="btn sub" style="width:auto;padding:9px 14px" onclick="startMadeQuiz('${sid}')">📝 예상문제 ${f.s.made.length}</button>`;
     if((f.s.qs||[]).length) b += `<button class="btn sub" style="width:auto;padding:9px 14px" onclick="startSecQuiz('${sid}')">기출 ${f.s.qs.length}</button>`;
     return b;
   };
-  $('lv-btns').innerHTML = secBtns(l.sec);
+  $('lv-btns').innerHTML = secBtns(l.sec) || '<span style="font-size:12px;color:#c0473d">⚠️ 교재 연결 없음 (sec='+l.sec+', STUDY='+(STUDY?'있음':'없음')+')</span>';
   $('lv-slides').innerHTML = l.imgs.map((src,i)=>
     `<img src="${src}" alt="${l.n}강 ${i+1}쪽" style="width:100%;border-radius:10px;margin:6px 0;border:1px solid var(--line,#e5e0d8)">`).join('');
   const nx = LECT.items.find(x=>x.n===n+1);
@@ -723,6 +726,7 @@ function openSec(sid, from){
     if(hasQ){ dq.style.display=''; dq.onclick=()=>{ const el=$('read-qs'); if(el) el.scrollIntoView({behavior:'smooth'}); }; }
     else dq.style.display='none';
   }
+
   $('read-doc').innerHTML = f.s.html;
   let h='';
   const made = f.s.made || [];
