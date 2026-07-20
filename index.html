@@ -69,6 +69,20 @@ h2.t:first-child{margin-top:4px}
 .mode .tx b{display:block;font-size:15px}
 .mode .tx span{display:block;font-size:12px;color:var(--hoe)}
 .mode .cnt{font-size:12px;color:var(--hoe);flex:none;font-variant-numeric:tabular-nums}
+/* 홈 그룹 카드 */
+.grp{background:var(--paper);border:1px solid var(--seon);border-radius:16px;padding:6px;margin-bottom:14px;box-shadow:var(--sh)}
+.grp-h{display:flex;align-items:center;gap:8px;padding:10px 12px 6px;font-weight:800;font-size:16px;color:var(--meok,#2b2b2b)}
+.grp-h .ge{font-size:19px}
+.grp .mode{border:none;box-shadow:none;margin-bottom:2px;border-radius:11px;background:transparent}
+.grp .mode:hover:not(:disabled){background:var(--cheong-l);transform:none;border:none}
+.mode .cnt.badge{background:var(--ju,#d9534f);color:#fff;padding:2px 9px;border-radius:11px;font-weight:800;font-size:12.5px}
+.mode .cnt.badge0{background:transparent;color:var(--hoe)}
+details.more{margin:2px 0 14px}
+details.more summary{cursor:pointer;padding:11px 14px;border-radius:12px;background:var(--paper);border:1px solid var(--seon);
+  font-weight:700;font-size:14px;color:var(--hoe);list-style:none;box-shadow:var(--sh)}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:" ▾";float:right}
+details.more[open] summary::after{content:" ▴"}
 
 /* 목록 */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
@@ -213,57 +227,65 @@ input[type=file]{display:none}
     <div id="st-bars"></div>
   </div>
 
-  <h2 class="t">오늘 할 일</h2>
-  <button class="mode hot" id="m-due" onclick="startDue()">
-    <span class="ic">復</span><span class="tx"><b>오늘 복습</b>
-    <span>틀린 문제를 1일 → 3일 → 7일 간격으로</span></span>
-    <span class="cnt" id="cnt-due">0문항</span></button>
-  <button class="mode" id="m-wrong" onclick="startWrong()">
-    <span class="ic">✕</span><span class="tx"><b>틀린 문제 전부</b>
-    <span>기간 상관없이 몰아서 다시 풀기</span></span>
-    <span class="cnt" id="cnt-wrong">0문항</span></button>
-  <button class="mode" id="m-star" onclick="startStar()">
-    <span class="ic">★</span><span class="tx"><b>별표한 문제</b>
-    <span>표시해 둔 것만</span></span>
-    <span class="cnt" id="cnt-star">0문항</span></button>
-
-  <h2 class="t">공부하기</h2>
-  <button class="mode" id="m-lect" onclick="drawLects();go('s-lect')">
-    <span class="ic">🎓</span><span class="tx"><b>연수 강의별</b>
-    <span>1~60강 슬라이드 → 교재 → 문제 순서로</span></span>
-    <span class="cnt" id="cnt-lect">—</span></button>
-  <button class="mode" id="m-study" onclick="drawStudy()">
-    <span class="ic">📖</span><span class="tx"><b>교재 학습</b>
-    <span>단원 읽기 · 예상문제 · 그 단원 기출까지 한 번에</span></span>
-    <span class="cnt" id="cnt-study">—</span></button>
-
-  <h2 class="t">문제 풀기</h2>
-  <button class="mode" onclick="go('s-round')">
-    <span class="ic">回</span><span class="tx"><b>회차별</b>
-    <span>실제 시험처럼 50문항을 순서대로</span></span>
-    <span class="cnt" id="cnt-round">—</span></button>
-  <button class="mode" onclick="go('s-era')">
-    <span class="ic">代</span><span class="tx"><b>시대별</b>
-    <span>여러 회차를 시대 단위로 묶어서</span></span>
-    <span class="cnt" id="cnt-era">—</span></button>
-  <button class="mode" onclick="startMock()">
-    <span class="ic">試</span><span class="tx"><b>무작위 모의고사</b>
-    <span>전 회차에서 50문항 · 점수가 곧 등급</span></span>
-    <span class="cnt">50문항</span></button>
-  <button class="mode" onclick="packIn.click()">
-    <span class="ic">＋</span><span class="tx"><b>문제팩 넣기</b>
-    <span>문제팩 파일을 여러 개 한 번에 선택</span></span>
-    <span class="cnt" id="cnt-pack">—</span></button>
-
-  <h2 class="t">기록</h2>
-  <div class="row">
-    <button class="btn sub" onclick="saveFile()">기록 내려받기</button>
-    <button class="btn sub" onclick="fileIn.click()">기록 불러오기</button>
+  <div class="grp">
+    <div class="grp-h"><span class="ge">📕</span> 공부하기</div>
+    <button class="mode" id="m-lect" onclick="drawLects();go('s-lect')">
+      <span class="ic">🎓</span><span class="tx"><b>연수 강의별</b>
+      <span>강의 슬라이드 → 교재 → 문제 순서로</span></span>
+      <span class="cnt" id="cnt-lect">—</span></button>
+    <button class="mode" id="m-study" onclick="drawStudy()">
+      <span class="ic">📖</span><span class="tx"><b>교재 학습</b>
+      <span>단원 읽고 · 예상문제 · 기출까지</span></span>
+      <span class="cnt" id="cnt-study">—</span></button>
   </div>
-  <div class="row">
-    <button class="btn sub" onclick="resetAll()">기록 지우기</button>
-    <button class="btn sub" onclick="clearPacks()">문제팩 지우기</button>
+
+  <div class="grp">
+    <div class="grp-h"><span class="ge">✏️</span> 문제 풀기</div>
+    <button class="mode" onclick="go('s-round')">
+      <span class="ic">回</span><span class="tx"><b>회차별 기출</b>
+      <span>실제 시험처럼 50문항 순서대로</span></span>
+      <span class="cnt" id="cnt-round">—</span></button>
+    <button class="mode" onclick="go('s-era')">
+      <span class="ic">代</span><span class="tx"><b>시대별 기출</b>
+      <span>선사·삼국·고려·조선… 시대로 묶어서</span></span>
+      <span class="cnt" id="cnt-era">—</span></button>
+    <button class="mode" onclick="startMock()">
+      <span class="ic">試</span><span class="tx"><b>모의고사</b>
+      <span>전 회차 무작위 50문항 · 등급 확인</span></span>
+      <span class="cnt">50문항</span></button>
   </div>
+
+  <div class="grp">
+    <div class="grp-h"><span class="ge">🔁</span> 복습하기</div>
+    <button class="mode hot" id="m-due" onclick="startDue()">
+      <span class="ic">復</span><span class="tx"><b>오늘 복습</b>
+      <span>1일 → 3일 → 7일 간격 자동 복습</span></span>
+      <span class="cnt" id="cnt-due">0문항</span></button>
+    <button class="mode" id="m-wrong" onclick="startWrong()">
+      <span class="ic">✕</span><span class="tx"><b>틀린 문제 전부</b>
+      <span>기간 상관없이 몰아서 다시 풀기</span></span>
+      <span class="cnt" id="cnt-wrong">0문항</span></button>
+    <button class="mode" id="m-star" onclick="startStar()">
+      <span class="ic">★</span><span class="tx"><b>별표한 문제</b>
+      <span>표시해 둔 것만</span></span>
+      <span class="cnt" id="cnt-star">0문항</span></button>
+  </div>
+
+  <details class="more">
+    <summary>⚙️ 자료 넣기 · 기록 관리</summary>
+    <button class="mode" onclick="packIn.click()" style="margin-top:8px">
+      <span class="ic">＋</span><span class="tx"><b>문제팩·교재팩 넣기</b>
+      <span>받은 파일을 여러 개 한 번에 선택</span></span>
+      <span class="cnt" id="cnt-pack">—</span></button>
+    <div class="row">
+      <button class="btn sub" onclick="saveFile()">기록 내려받기</button>
+      <button class="btn sub" onclick="fileIn.click()">기록 불러오기</button>
+    </div>
+    <div class="row">
+      <button class="btn sub" onclick="resetAll()">기록 지우기</button>
+      <button class="btn sub" onclick="clearPacks()">문제팩 지우기</button>
+    </div>
+  </details>
   <input type="file" id="fileIn" accept=".json" onchange="loadFile(this)">
   <input type="file" id="packIn" accept=".json" multiple onchange="loadPack(this)">
 
@@ -519,9 +541,10 @@ function drawHome(){
 
   const du = dueIds().length, wr = Object.keys(S.srs).filter(id=>qById(id)).length;
   const st = S.star.filter(id=>qById(id)).length;
-  $('cnt-due').textContent   = du+'문항';
-  $('cnt-wrong').textContent = wr+'문항';
-  $('cnt-star').textContent  = st+'문항';
+  const badge=(el,n)=>{ el.textContent=n+'문항'; el.className='cnt badge'+(n?'':'0'); };
+  badge($('cnt-due'),du);
+  badge($('cnt-wrong'),wr);
+  badge($('cnt-star'),st);
   $('m-due').disabled   = !du;
   $('m-wrong').disabled = !wr;
   $('m-star').disabled  = !st;
