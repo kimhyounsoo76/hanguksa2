@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2b5f75">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 <title>한국사 기출 풀이 — 심화 1급</title>
 <meta name="theme-color" content="#0D1F3C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -252,7 +256,7 @@ input[type=file]{display:none}
   <input type="file" id="packIn" accept=".json" multiple onchange="loadPack(this)">
 
   <div class="card note">
-    <b>이 앱에 대해</b> <span style="color:#2b5f75;font-weight:700">(v4 · 연수강의)</span><br>
+    <b>이 앱에 대해</b> <span style="color:#2b5f75;font-weight:700">(v5 · 60강통합)</span><br>
     국사편찬위원회가 공개한 <b>제57회~제78회 실제 기출 문제지</b> 22회차 1,100문항을
     문항 단위로 그대로 옮겼습니다. 사진·지도·연표 문항도 원본 그대로라 빠짐없이 풀 수 있습니다.
     정답과 배점은 공식 정답표에서 가져왔고, 22회차 모두 <b>배점 합계 100점</b>으로 확인했습니다.<br><br>
@@ -290,7 +294,7 @@ input[type=file]{display:none}
 </section>
 
 <section class="scr" id="s-sec">
-  <button class="btn sub" onclick="go('s-study')" style="width:auto;padding:8px 14px">← 권 목록</button>
+  <button class="btn sub" onclick="(STUDY&&Object.keys(STUDY.vols).length===1)?go('s-home'):go('s-study')" style="width:auto;padding:8px 14px">← 뒤로</button>
   <h2 class="t" id="sec-title"></h2>
   <div class="grid" id="sec-list"></div>
 </section>
@@ -602,21 +606,22 @@ function drawStudy(){
     $('study-vols').innerHTML='';
     $('study-note').innerHTML=`<b>교재팩이 아직 없습니다</b><br>
       같이 받은 <b>교재팩_전권.json</b>을 홈 화면의 <b>문제팩 넣기</b>로 넣으면
-      4권 전체 교재가 여기에 들어오고, 각 단원마다 그 단원에서 나온 기출문제가 함께 붙습니다.`;
+      교재 전체가 여기에 들어오고, 각 단원마다 그 단원에서 나온 예상문제·기출이 함께 붙습니다.`;
     return;
   }
+  const vkeys = Object.keys(STUDY.vols);
+  // 권이 하나면 권 선택을 건너뛰고 바로 단원 목록
+  if(vkeys.length === 1){ drawSecs(vkeys[0]); return; }
   let h='';
-  for(const v of [1,2,3,4]){
+  for(const v of vkeys){
     const vol = STUDY.vols[v]; if(!vol) continue;
     const nsec = vol.secs.length;
     const nq = vol.secs.reduce((s,x)=>s+x.qs.length,0);
-    h += `<button class="item" onclick="drawSecs(${v})"><b>${esc(vol.title)}</b>
+    h += `<button class="item" onclick="drawSecs('${v}')"><b>${esc(vol.title)}</b>
       <span class="u-meta"><span class="u-pc">${nsec}개 단원 · 연결 기출 ${nq}문항</span></span></button>`;
   }
   $('study-vols').innerHTML=h;
-  $('study-note').innerHTML=`단원을 열면 <b>본문 → 그 단원에서 나온 기출문제</b> 순서로 이어집니다.
-    본문을 읽은 뒤 바로 아래 기출을 풀면 읽기 → 인출 연습이 한 번에 됩니다.
-    문제 해설 화면에도 <b>「교재에서 이 부분 읽기」</b> 단추가 붙어 반대 방향으로도 오갈 수 있습니다.`;
+  $('study-note').innerHTML=`단원을 열면 <b>본문 → 그 단원의 예상문제·기출</b> 순서로 이어집니다.`;
 }
 function drawSecs(v){
   CUR_V = v;
@@ -636,8 +641,8 @@ function drawSecs(v){
   go('s-sec'); window.scrollTo(0,0);
 }
 function findSec(sid){
-  for(const v of [1,2,3,4]){
-    const vol=STUDY && STUDY.vols[v]; if(!vol) continue;
+  for(const v of Object.keys(STUDY ? STUDY.vols : {})){
+    const vol=STUDY.vols[v]; if(!vol) continue;
     const s=vol.secs.find(x=>x.id===sid); if(s) return {v, s};
   }
   return null;
@@ -963,6 +968,8 @@ document.addEventListener('keydown', e => {
   }catch(e){ toast('저장소를 열지 못했습니다 — 이번 세션에만 문제팩이 남습니다'); }
   rebuild(); drawHome(); drawRounds(); drawEras();
 })();
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 </script>
 
 </body>
