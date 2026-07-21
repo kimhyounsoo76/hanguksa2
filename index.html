@@ -90,6 +90,26 @@ details.more summary{cursor:pointer;padding:11px 14px;border-radius:12px;backgro
 details.more summary::-webkit-details-marker{display:none}
 details.more summary::after{content:" ▾";float:right}
 details.more[open] summary::after{content:" ▴"}
+/* 검색 */
+.srch-home{display:flex;align-items:center;gap:10px;padding:13px 14px;margin-bottom:18px;
+  border-radius:12px;background:var(--paper);border:1px solid var(--line);color:var(--hoe);
+  box-shadow:var(--sh);cursor:pointer;font-size:14px}
+.srch-home svg{color:var(--cheong);flex:none}
+.srch-bar{display:flex;align-items:center;gap:10px;margin:12px 0;padding:11px 14px;
+  border-radius:12px;background:var(--paper);border:1.5px solid var(--cheong)}
+.srch-bar svg{color:var(--cheong);flex:none}
+.srch-bar input{flex:1;border:none;outline:none;font-size:16px;background:transparent;color:var(--meok)}
+.srch-bar button{border:none;background:none;color:var(--hoe);font-size:16px;padding:2px 6px;cursor:pointer}
+.srch-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
+.srch-chips .chip{padding:7px 13px;border-radius:99px;background:var(--cheong-l);color:var(--cheong-d);
+  font-size:13px;font-weight:600;cursor:pointer;border:none}
+.srch-sec{font-size:12px;font-weight:600;color:var(--hoe);margin:18px 2px 8px;letter-spacing:.03em}
+.srch-item{display:block;width:100%;text-align:left;padding:13px 14px;margin-bottom:7px;border-radius:12px;
+  background:var(--paper);border:1px solid var(--line);cursor:pointer;box-shadow:var(--sh)}
+.srch-item b{font-size:14px;font-weight:600;display:block}
+.srch-item .sm{font-size:12px;color:var(--hoe);margin-top:3px;line-height:1.5}
+.srch-item .hl{background:#FFF2A8;border-radius:3px;padding:0 2px}
+.srch-empty{text-align:center;color:var(--hoe);padding:40px 20px;font-size:14px;line-height:1.7}
 
 /* 목록 */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
@@ -237,6 +257,11 @@ input[type=file]{display:none}
     <div id="st-bars"></div>
   </div>
 
+  <div class="srch-home" onclick="go('s-search');drawChips();setTimeout(()=>{var e=document.getElementById('srch-in');if(e)e.focus();},100)">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M21 21l-6 -6"/></svg>
+    <span>키워드로 찾기 — 예: 훈민정음, 무신정변, 대동법</span>
+  </div>
+
   <div class="grp">
     <div class="grp-h">공부하기</div>
     <button class="mode" id="m-lect" onclick="drawLects();go('s-lect')">
@@ -362,6 +387,17 @@ input[type=file]{display:none}
   <h2 class="t">연수 강의 (60강)</h2>
   <div class="grid" id="lect-list"></div>
   <div class="card note" id="lect-note"></div>
+</section>
+
+<section class="scr" id="s-search">
+  <button class="btn sub" onclick="go('s-home')" style="width:auto;padding:8px 14px">← 홈</button>
+  <div class="srch-bar">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M21 21l-6 -6"/></svg>
+    <input id="srch-in" type="search" inputmode="search" placeholder="키워드 입력 (예: 훈민정음)" oninput="doSearch(this.value)" autocomplete="off">
+    <button id="srch-clr" onclick="document.getElementById('srch-in').value='';doSearch('')" style="display:none">✕</button>
+  </div>
+  <div id="srch-chips" class="srch-chips"></div>
+  <div id="srch-result"></div>
 </section>
 
 <section class="scr" id="s-lview">
@@ -506,6 +542,82 @@ function qById(id){
   const q = ALL.find(q=>q.id===id);
   if(q) return q;
   return MADEBANK[id] || null;   // 교재 예상문제도 조회
+}
+
+/* ══ 검색 ══ */
+const SRCH_SUGGEST = ['훈민정음','무신정변','대동법','골품제','묘청','정묘호란','병자호란','예송','환국',
+  '위화도 회군','과거제','노비안검법','삼별초','팔만대장경','수원 화성','거중기','흥선대원군','갑오개혁',
+  '을미사변','independence','3·1 운동','물산장려운동','신간회','6·25','유신헌법','5·18','골품','화백'];
+function drawChips(){
+  const el=$('srch-chips'); if(!el) return;
+  el.innerHTML = SRCH_SUGGEST.slice(0,12).map(k=>`<button class="chip" onclick="srchDo('${k}')">${esc(k)}</button>`).join('');
+}
+function srchDo(k){ const i=$('srch-in'); if(i){ i.value=k; } doSearch(k); }
+function hlMark(text, q){
+  if(!text) return '';
+  const t=esc(text);
+  if(!q) return t;
+  try{ return t.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<span class="hl">$1</span>'); }
+  catch(e){ return t; }
+}
+function doSearch(q){
+  q=(q||'').trim();
+  $('srch-clr').style.display = q ? '' : 'none';
+  const box=$('srch-result');
+  if(q.length<1){ drawChips(); $('srch-chips').style.display=''; box.innerHTML=''; return; }
+  $('srch-chips').style.display='none';
+  const ql=q.toLowerCase();
+
+  // 1) 교재 단원 검색
+  const secs=[];
+  if(STUDY){
+    for(const v of Object.keys(STUDY.vols)){
+      for(const s of STUDY.vols[v].secs){
+        const plain=(s.t+' '+s.html.replace(/<[^>]+>/g,' ')).toLowerCase();
+        if(plain.includes(ql)){
+          const txt=s.html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
+          const idx=txt.toLowerCase().indexOf(ql);
+          const snip=idx>=0?txt.slice(Math.max(0,idx-20),idx+40):txt.slice(0,60);
+          secs.push({id:s.id,t:s.t,snip});
+        }
+      }
+    }
+  }
+  // 2) 기출 문제 검색 (topic·why·선지·ref)
+  const quiz=[];
+  for(const it of ALL){
+    const blob=((it.topic||'')+' '+(it.why||'')+' '+(it.ref||'')+' '+(it.o||[]).join(' ')).toLowerCase();
+    if(blob.includes(ql)){
+      quiz.push(it);
+      if(quiz.length>=40) break;
+    }
+  }
+
+  let h='';
+  if(!secs.length && !quiz.length){
+    box.innerHTML=`<div class="srch-empty"><b>"${esc(q)}"</b> 검색 결과가 없습니다.<br>다른 키워드로 찾아보세요.</div>`;
+    return;
+  }
+  if(secs.length){
+    h+=`<div class="srch-sec">교재 단원 ${secs.length}개</div>`;
+    for(const s of secs.slice(0,12)){
+      h+=`<button class="srch-item" onclick="openSec('${s.id}','s-search')">
+        <b>${hlMark(s.t,q)}</b><span class="sm">${hlMark(s.snip,q)}…</span></button>`;
+    }
+  }
+  if(quiz.length){
+    h+=`<div class="srch-sec">기출 문제 ${quiz.length}${quiz.length>=40?'+':''}개</div>`;
+    for(const it of quiz.slice(0,30)){
+      h+=`<button class="srch-item" onclick="srchOpenQuiz('${it.id}')">
+        <b>${it.r}회 ${it.n}번 · ${hlMark(it.topic||'',q)}</b>
+        <span class="sm">${hlMark((it.why||'').slice(0,60),q)}…</span></button>`;
+    }
+  }
+  box.innerHTML=h;
+}
+function srchOpenQuiz(id){
+  const q=qById(id); if(!q) return;
+  begin([q], (q.topic||'검색 문제'), ()=>srchOpenQuiz(id), false);
 }
 
 /* ══ D-day ══ */
